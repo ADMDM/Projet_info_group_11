@@ -93,8 +93,73 @@ data.to_csv('data_LBIR1271.csv')
 
 
 
-# Partie 2 :
+#Partie 2 du projet :
 
-# Tableau des stats principales des variables
+# Calculer les statistiques principales des variables
+
 stats = pd.DataFrame({"Moyenne": data.mean(),"Variance": data.var(),"Minimum": data.min(),"Maximum": data.max()})
-   
+
+
+# Figure 1
+
+fig, axs = plt.subplots(4, 1, figsize=(10, 10))
+
+axs[0].plot(data.index, data['Rain_E'], title = 'Pluie au sol dans la for')
+
+axs[0].set_ylabel('Rain_E (mm)')
+
+axs[1].plot(data.index, data['Rain_T'], title = 'Rain_T')
+
+axs[1].set_ylabel('Rain_T (mm)')
+
+axs[2].plot(data.index, data['H45E'], title = 'H45E')
+
+axs[2].set_ylabel('H45E (g/m³)')
+
+axs[3].plot(data.index, data['H45T'], title = 'H45T')
+
+axs[3].set_ylabel('H45T (g/m³)')
+
+fig.suptitle('Figure 1: Rain_E, Rain_T, H45E, and H45T')
+
+# Figure 2
+fig, axs = plt.subplots(2, 3, figsize=(16, 8))
+axs[0, 0].plot(data.index, data['Irradiance'])
+axs[0, 0].set_ylabel('Irradiance (kWh/m²)')
+axs[0, 1].plot(data.index, data['Rain'])
+axs[0, 1].set_ylabel('Rain (mm)')
+axs[0, 2].plot(data.index, data['Temp'])
+axs[0, 2].set_ylabel('Temp (°C)')
+axs[1, 0].plot(data.index, data['Wind'])
+axs[1, 0].set_ylabel('Wind (m/s)')
+axs[1, 1].plot(data.index, data['Rel hum'])
+axs[1, 1].set_ylabel('Rel_hum (%)')
+axs[1, 2].plot(data.index, data['SD'])
+axs[1, 2].set_ylabel('SD (kPa)')
+fig.suptitle('Figure 2: Irradiance, Rain, Temp, Wind, Rel_hum, and SD')
+
+ 
+
+# Figure 3
+fig, axs = plt.subplots(2, 3, figsize=(16, 8))
+axs[0, 0].plot(data.index, data['E153'])
+axs[0, 0].set_ylabel('E153 (kg/m²/s)')
+axs[0, 1].plot(data.index, data['E159'])
+axs[0, 1].set_ylabel('E159 (kg/m²/s)')
+axs[0, 2].plot(data.index, data['E161'])
+axs[0, 2].set_ylabel('E161 (kg/m²/s)')
+axs[1, 0].plot(data.index, data['T13'])
+axs[1, 0].set_ylabel('T13 (mm/d)')
+axs[1, 1].plot(data.index, data['T21'])
+axs[1, 1].set_ylabel('T21 (mm/d)')
+axs[1, 2].plot(data.index, data['T22'])
+axs[1, 2].set_ylabel('T22 (mm/d)')
+fig.suptitle('Figure 3: E153, E159, E161, T13, T21, and T22')
+
+ 
+
+plt.show()
+
+
+#Evolution la pluie au sol et de l’humidit´e volumique du sol entre 1999 et
+#2001 en forˆet ´eclaircie et t´emoin
