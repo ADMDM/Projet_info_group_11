@@ -4,7 +4,7 @@
 Created on Thu Mar  2 17:11:04 2023
 
 @author: adamdavidmalila
-"""
+
    #Projet groupe 11 :Script partie Informatique
 # Importation des packages nécessaires
 import numpy as np
@@ -80,3 +80,30 @@ fig, axs = plt.subplots(4, 1, figsize=(10, 10))
 
 # Ajout du premier sous-graphique : Rain_E (mm)
 axs[0].plot
+
+#%%
+# Calculer la matrice de corrélation
+corr_matrix = data.corr()
+
+# Afficher la heatmap
+sns.set(font_scale=1.2)
+sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', vmin=-1, vmax=1)
+plt.title('Matrice de corrélation des variables météorologiques')
+plt.savefig('heatmap.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+#%%
+
+# Sélection des variables à inclure dans la figure
+variables = ["Temp", "Rain", "Wind", "Irradiance", "Rel_hum", "SD", "Rain_E", "H45E", "E153"]
+
+# Création d'un sous-dataframe contenant seulement ces variables
+data_sub = data[variables]
+
+# Création de la figure avec la fonction pairplot
+sns.pairplot(data_sub, diag_kind="hist", corner=True)
+
+
+# Sauvegarde de la figure
+plt.savefig("pairplot.png")
+
