@@ -102,23 +102,29 @@ stats = pd.DataFrame({"Moyenne": data.mean(),"Variance": data.var(),"Minimum": d
 
 # Figure 1
 
+# Calculer les statistiques principales des variables
+
+stats = pd.DataFrame({"Moyenne": data.mean(),"Variance": data.var(),"Minimum": data.min(),"Maximum": data.max()})
+
+
 fig, axs = plt.subplots(4, 1, figsize=(10, 10))
 
-axs[0].plot(data.index, data['Rain_E'], title = 'Pluie au sol dans la for')
+axs[0].plot(data.index, data['Rain_E']) 
 
-axs[0].set_ylabel('Rain_E (mm)')
+axs[0].set_title('Rain_E (mm)')
 
-axs[1].plot(data.index, data['Rain_T'], title = 'Rain_T')
+axs[1].plot(data.index, data['Rain_T'])
 
-axs[1].set_ylabel('Rain_T (mm)')
+axs[1].set_title('Rain_T (mm)')
 
-axs[2].plot(data.index, data['H45E'], title = 'H45E')
+axs[2].plot(data.index, data['H45E'])
 
-axs[2].set_ylabel('H45E (g/m³)')
+axs[2].set_title('H45E (g/m³)')
 
-axs[3].plot(data.index, data['H45T'], title = 'H45T')
+axs[3].plot(data.index, data['H45T'])
 
-axs[3].set_ylabel('H45T (g/m³)')
+axs[3].set_title('H45T (g/m³)')
+
 
 fig.suptitle('Figure 1: Rain_E, Rain_T, H45E, and H45T')
 
