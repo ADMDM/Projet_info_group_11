@@ -23,4 +23,77 @@ weather["wd"]=weather.groupby(["Rain"]).cumsum()
 
 
 
+
+
+#nouveau 
+#  PROJET INFO CODE    
+
+# Certain '#' sont utiliser pour rendre plus claire la console
+
+
+#importation des packages :
+
+import numpy as np
+import matplotlib as plt
+import pandas as pd
+import seaborn as sb 
+
+
+#Charger les donées respectivement; weather, soil_measurments, SFD
+
+#1. weather
+weather = pd.read_csv ('C:/Users/Vincent/Downloads/Weather.txt')
+#print(weather.head())
+#weather.info()
+
+#2. soil_measurments
+soil_measurments = pd.read_csv('C:/Users/Vincent/Downloads/Soil_measurements.txt')
+#print (soil_measurments.head())
+#soil_measurments.info()
+
+#3. SFD 
+SFD = pd.read_csv('C:/Users/Vincent/Downloads/SFD.txt')
+#print (SFD.head())
+#SFD.info()
+
+
+
+#    DEBUTS DES TACHES 
+
+# créeation du dataframe : data
+
+
+data_weather = weather.groupby(by='Day') [['Irradiance','Rain']].sum()
+#print(data_weather.head()) 
+
+data_weather1 = weather.groupby(by='Day') [['Temp','Wind','Rel_hum','SD']].mean()
+#print(data_weather1.head())
+
+data_soil = soil_measurments.groupby(by = 'Day') [['H45T', 'H45E']].sum()
+#print(data_soil.head())
+
+data_soil1 = soil_measurments.groupby(by = 'Day') [['Rain_E', 'Rain_T']].sum()
+#print(data_soil1.head())
+
+data_SFD = SFD.groupby(by = 'Day') [['E153', 'E159', 'E161', 'T13', 'T21', 'T22']].sum()
+#print(data_SFD)
+
+data = pd.merge(pd.merge(pd.merge(pd.merge(data_weather,data_weather1, how='outer', on= ('Day') ),data_soil,how='outer', on= ('Day')), data_soil1,how='outer', on= ('Day')), data_SFD,how='outer', on= ('Day'))
+
+
+
+
+#Changement de l'unité de la variable Irradiance
+data ['Irradiance'] = data['Irradiance'] / 360
+#print(data.head())
+
+
+#changement d'index de data ; nouvel index : Date
+data['Date'] = pd.date_range('1999-1-1',periods = 1096).strftime('%Y-%m-%d')
+data.set_index('Date', inplace = True)
+
+#save data 
+data.to_csv('data_LBIR1271.csv')
+
+
    
