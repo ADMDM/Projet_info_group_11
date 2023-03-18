@@ -76,7 +76,68 @@ data = pd.read_csv('data_LBIR1271.csv', parse_dates=['Date'], index_col='Date')
 # Figure 1: Rain E, Rain T, H45E et H45T
 
 # Création d'une figure contenant 4 sous-graphiques
+
 fig, axs = plt.subplots(4, 1, figsize=(10, 10))
+
+axs[0].plot(data.index, data['Rain_E']) 
+axs[0].set_title('Rain_E (mm)')
+axs[1].plot(data.index, data['Rain_T'])
+axs[1].set_title('Rain_T (mm)')
+axs[2].plot(data.index, data['H45E'])
+axs[2].set_title('H45E (g/m³)')
+axs[3].plot(data.index, data['H45T'])
+axs[3].set_title('H45T (g/m³)')
+fig.suptitle('Figure 1: Rain_E, Rain_T, H45E, and H45T')
+fig.tight_layout(pad=3.0, h_pad=1.5)
+plt.show()
+
+
+# Figure 2
+fig, axs = plt.subplots(6, 1, figsize=(10, 15))
+
+axs[0].plot(data.index, data['Irradiance']) 
+axs[0].set_title('Irradiance (kWh/m²)')
+axs[1].plot(data.index, data['Rain'])
+axs[1].set_title('Rain (mm)')
+axs[2].plot(data.index, data['Temp'])
+axs[2].set_title('Temp (°C)')
+axs[3].plot(data.index, data['Wind'])
+axs[3].set_title('Wind (m/s)')
+axs[4].plot(data.index, data['Rel_hum'])
+axs[4].set_title('Rel_hum (%)')
+axs[5].plot(data.index, data['SD'])
+axs[5].set_title('SD (m)')
+fig.suptitle('Figure 2: Irradiance, Rain, Temp, Wind, Rel_hum and SD')
+fig.tight_layout(pad=3.0, h_pad=1.5)
+plt.show()
+
+
+
+# Figure 3
+fig, axs = plt.subplots(6, 1, figsize=(10, 15))
+
+axs[0].plot(data.index, data['E153']) 
+axs[0].set_title('E153 (g/s)')
+axs[1].plot(data.index, data['E159'])
+axs[1].set_title('E159 (g/s)')
+axs[2].plot(data.index, data['E161'])
+axs[2].set_title('E161 (g/s)')
+axs[3].plot(data.index, data['T13'])
+axs[3].set_title('T13 (°C)')
+axs[4].plot(data.index, data['T21'])
+axs[4].set_title('T21 (°C)')
+axs[5].plot(data.index, data['T22'])
+axs[5].set_title('T22 (°C)')
+fig.suptitle('Figure 3: E153, E159, E161, T13, T21 and T22')
+fig.tight_layout(pad=3.0, h_pad=1.5)
+plt.show()
+
+plt.savefig('figure3.png')
+#Sauvergarder 
+plt.savefig('figure1.png')
+plt.savefig('figure2.png')
+plt.savefig('figure3.png')
+
 
 # Ajout du premier sous-graphique : Rain_E (mm)
 axs[0].plot
