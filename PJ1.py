@@ -23,9 +23,10 @@ weather["wd"]=weather.groupby(["Rain"]).cumsum()
 
 
 
+#True_New_Code :
 
 
-#nouveau 
+
 #  PROJET INFO CODE    
 
 # Certain '#' sont utiliser pour rendre plus claire la console
@@ -42,17 +43,17 @@ import seaborn as sb
 #Charger les donées respectivement; weather, soil_measurments, SFD
 
 #1. weather
-weather = pd.read_csv ('C:/Users/Vincent/Downloads/Weather.txt')
+weather = pd.read_csv("weather.txt")
 #print(weather.head())
 #weather.info()
 
 #2. soil_measurments
-soil_measurments = pd.read_csv('C:/Users/Vincent/Downloads/Soil_measurements.txt')
+soil_measurments = pd.read_csv("Soil_measurements.txt")
 #print (soil_measurments.head())
 #soil_measurments.info()
 
 #3. SFD 
-SFD = pd.read_csv('C:/Users/Vincent/Downloads/SFD.txt')
+SFD = pd.read_csv("SFD.txt")
 #print (SFD.head())
 #SFD.info()
 
@@ -61,6 +62,9 @@ SFD = pd.read_csv('C:/Users/Vincent/Downloads/SFD.txt')
 #    DEBUTS DES TACHES 
 
 # créeation du dataframe : data
+#weather["Cum_Rain"] = weather["Rain"].cumsum()
+#weather["Cum_Irr"] = weather["Irradiance"].cumsum()
+#data_weather = weather.groupby(by='Day') [['Cum_Irr','Cum_Rain']].sum()
 
 
 data_weather = weather.groupby(by='Day') [['Irradiance','Rain']].sum()
@@ -84,6 +88,7 @@ data = pd.merge(pd.merge(pd.merge(pd.merge(data_weather,data_weather1, how='oute
 
 
 #Changement de l'unité de la variable Irradiance
+# data ['Cum_Irr'] = data['Cum_Irr'] / 360
 data ['Irradiance'] = data['Irradiance'] / 360
 #print(data.head())
 
@@ -94,6 +99,4 @@ data.set_index('Date', inplace = True)
 
 #save data 
 data.to_csv('data_LBIR1271.csv')
-
-
    
