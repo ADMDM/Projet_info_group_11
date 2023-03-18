@@ -4,7 +4,7 @@
 Created on Thu Mar  2 17:11:04 2023
 
 @author: adamdavidmalila
-
+"""
     #Projet groupe 11 :Script partie Informatique
 # Importation des packages nécessaires
 import numpy as np
