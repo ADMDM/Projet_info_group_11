@@ -90,4 +90,11 @@ data.set_index('Date', inplace = True)
 
 #save data 
 data.to_csv('data_LBIR1271.csv')
+
+
+
+# Partie 2 :
+
+# Tableau des stats principales des variables
+stats = pd.DataFrame({"Moyenne": data.mean(),"Variance": data.var(),"Minimum": data.min(),"Maximum": data.max()})
    
