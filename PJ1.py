@@ -31,15 +31,6 @@ weather["wd"]=weather.groupby(["Rain"]).cumsum()
 
 # Certain '#' sont utiliser pour rendre plus claire la console
 
-
-#importation des packages :
-
-import numpy as np
-import matplotlib as plt
-import pandas as pd
-import seaborn as sb 
-
-
 #Charger les donées respectivement; weather, soil_measurments, SFD
 
 #1. weather
