@@ -83,19 +83,19 @@ fig, axs = plt.subplots(4, 1, figsize=(10, 10))
 
 # Plot de Rain_E (mm)
 axs[0].plot(data.index, data['Rain_E'])
-axs[0].set_title('Rain_E (mm)')
+axs[0].set_title('Pluie au sol dans la forêt éclaircie [mm]')
 
 # Plot de Rain_T (mm)
 axs[1].plot(data.index, data['Rain_T'])
-axs[1].set_title('Rain_T (mm)')
+axs[1].set_title('Pluie au sol dans la forêt témoin [mm]')
 
 # Plot de H45E (%)
 axs[2].plot(data.index, data['H45E'].dropna(), 'o-',)
-axs[2].set_title('H45E (%)')
+axs[2].set_title('Humidité volumique dans le sol dans la forêt éclaircie [%]')
 
 # Plot de H45T (%)
 axs[3].plot(data.index, data['H45T'].dropna(), 'o-')
-axs[3].set_title('H45T (%)')
+axs[3].set_title('Humidité volumique dans la forêt témoin [%]')
 
 fig.suptitle('Figure 1: Rain_E, Rain_T, H45E, and H45T')
 fig.tight_layout(pad=3.0, h_pad=1.5)
@@ -107,7 +107,7 @@ fig, axs = plt.subplots(6, 1, figsize=(10, 15))
 
 # Plot de Irradiance (kWh/m²)
 axs[0].plot(data.index, data['Irradiance'])
-axs[0].set_title('Irradiance (kWh/m²)')
+axs[0].set_title('Irradiance [kWh/m²]')
 
 # Plot de Rain (mm)
 axs[1].plot(data.index, data['Rain'])
@@ -115,19 +115,19 @@ axs[1].set_title('Rain (mm)')
 
 # Plot de Temp (°C)
 axs[2].plot(data.index, data['Temp'])
-axs[2].set_title('Temp (°C)')
+axs[2].set_title('Température [°C]')
 
 # Plot de Wind (m/s)
 axs[3].plot(data.index, data['Wind'])
-axs[3].set_title('Wind (m/s)')
+axs[3].set_title('Vitesse du vent [m/s]')
 
 # Plot de Rel_hum (%)
 axs[4].plot(data.index, data['Rel_hum'])
-axs[4].set_title('Rel_hum (%)')
+axs[4].set_title('Humidité relative [%]')
 
 # Plot de SD (m)
 axs[5].plot(data.index, data['SD'])
-axs[5].set_title('SD (m)')
+axs[5].set_title('Déficit de saturation [m]')
 
 fig.suptitle('Figure 2: Irradiance, Rain, Temp, Wind, Rel_hum and SD')
 fig.tight_layout(pad=3.0, h_pad=1.5)
@@ -139,40 +139,30 @@ fig, axs = plt.subplots(6, 1, figsize=(10, 15))
 
 # Ajout du premier sous-graphique : E153 (g/s)
 axs[0].plot(data.index, data['E153']) 
-axs[0].set_title('E153 (g/s)')
+axs[0].set_title('Arbre 153 (en forêt éclaircie)')
 
 # Ajout du deuxième sous-graphique : E159 (g/s)
 axs[1].plot(data.index, data['E159'])
-axs[1].set_title('E159 (g/s)')
+axs[1].set_title('Arbre 159 (en forêt éclairci)')
 
 # Ajout du troisième sous-graphique : E161 (g/s)
 axs[2].plot(data.index, data['E161'])
-axs[2].set_title('E161 (g/s)')
+axs[2].set_title('Arbre 161 (en forêt témoin)')
 
 # Ajout du quatrième sous-graphique : T13 (°C)
 axs[3].plot(data.index, data['T13'])
-axs[3].set_title('T13 (°C)')
+axs[3].set_title('Arbre 13 en fore^t témoin)')
 
 # Ajout du cinquième sous-graphique : T21 (°C)
 axs[4].plot(data.index, data['T21'])
-axs[4].set_title('T21 (°C)')
+axs[4].set_title('Arbre 21 (en forêt témoin)')
 
 # Ajout du sixième sous-graphique : T22 (°C)
 axs[5].plot(data.index, data['T22'])
-axs[5].set_title('T22 (°C)')
+axs[5].set_title('Arbre 22 (en fore^t témoin)')
 
 # Ajout d'un titre à la figure
-fig.suptitle('Figure 3: E153, E159, E161, T13, T21 and T22')
-
-# Ajustement de la disposition des sous-graphiques
-fig.tight_layout(pad=3.0, h_pad=1.5)
-
-# Affichage de la figure
-plt.show()
-
-# Sauvegarde de la figure
-plt.savefig('figure3.png')
-
+fig.suptitle('Figure 3: Densité de flux de sève[L.h^-1.dm^-2]')
 
 
 # Calculer la matrice de corrélation
