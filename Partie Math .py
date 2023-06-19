@@ -6,151 +6,141 @@ Created on Thu May  4 11:39:07 2023
 @author: adamdavidmalila
 """
 
-#Partie mathematqiue 
-
-
-#%%Tache 1
+import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sb
+import datetime as dt
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.io as sio
-
-# Importation des données climatiques
-donnees_clim = sio.loadmat('data.mat')
-data = pd.DataFrame(donnees_clim['data'], columns=["Days", "Irradiance", "Temperature", "Precipitations", "Vent", "Humidite relative",'deficit de saturation', "flux E153", "flux E159", "flux E161","flux T13", "flux T21", "flux T22", "hum vol sol T", "hum vol sol E", "pluie au sol E", "pluie au sol T"])
-
-# Remplacement des zéros par des NaN
-data = data.replace(0, np.nan)
-
-# Création du subplot
-fig, axs = plt.subplots(5, 3, figsize=(10, 10))
-
-# Liste des noms des colonnes à tracer
-cols = ['Irradiance', 'Temperature', 'Precipitations', 'Vent', 'Humidite relative',
-        'deficit de saturation', 'flux E153', 'flux E159', 'flux E161',
-        'flux T13', 'flux T21', 'flux T22', 'hum vol sol T', 'hum vol sol E', 
-        'pluie au sol E', 'pluie au sol T']
-
-# Boucle sur les rangées et les colonnes du subplot
-for i, ax in enumerate(axs.flatten()):
-    # Vérification si on a atteint la fin de la liste des noms de colonnes
-    if i < len(cols):
-        # Création du graphique
-        col_name = cols[i]
-        ax.plot(data['Days'], data[col_name])
-        ax.set_title("Serie chronologique de {}".format(col_name))
-        ax.set_xlabel("Jours")
-    else:
-        # Si on a atteint la fin de la liste, on cache l'axe
-        ax.axis('off')
-
-# Réglage des labels et de l'espacement entre les graphiques
-plt.tight_layout()
-
-# Affichage de la figure
-plt.show()
-
-
-
-
-
-#%%Tache 2 
+import evapotranspiration
 from evapotranspiration import calculate_et0_matlab
-
-# Calculer l'évapotranspiration de référence
-et0 = calculate_et0_matlab(data.values)
-
-et0 = et0.replace(0, np.nan)
-
-
-
-# Afficher l'évapotranspiration de référence
-plt.plot(data["Days"], et0)
-plt.title("Évapotranspiration de référence en fonction du temps")
-plt.xlabel("Jours")
-plt.ylabel("Évapotranspiration de référence")
-plt.show()
-
-#%%Tache 3
-import numpy as np
 from scipy.integrate import solve_ivp
-from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
+import scipy.interpolate as interpolate
 
-# Définir l'équation différentielle
-def equation(t, y):
-    return y * np.sin(t)
+# Tâche 1: Chargement et affichage des données initiales
 
-# Intervalle de temps
-t_span = [0, 10]
+# Charger les données à partir du fichier 'data.mat'
+data_mat = sio.loadmat('data.mat')
+data = data_mat['data']
 
-# Conditions initiales
-y0 = 1
+# Décaler les données d'une rangée vers le haut
+data = np.roll(data, 1, axis=0)
 
-# Valeurs de t où on veut résoudre l'équation différentielle
-t_eval = np.linspace(0, 10, 101)
+# Convertir les données en DataFrame pandas pour une manipulation facile
+data = pd.DataFrame(data, columns=['Days', 'Irradiance', 'Temperature', 'Precipitations', 'Vent', 'Humidité relative', 'Déficit de saturation', 'Flux E153', 'Flux E159', 'Flux E161', 'Flux T13', 'Flux T21', 'Flux T22', 'Humidité vol sol T', 'Humidité vol sol E', 'Pluie au sol E', 'Pluie au sol T'])
 
-# Paramètres initiaux
-Dmax = 15
-Smin = 70
-Smax = 150
-Kc = 0.25
-lambda_ = 2
+# Supprimer la première ligne (en-têtes de colonne)
+data = data.drop(index=0)
 
-# Fonction pour l'équation 11
-def equation_11(t, S, Dmax, Smin, Smax, Kc, lambda_, P, ET0):
-    dSdt = P(t) - (Dmax * (S - Smin) * Kc * ET0(t)) / (Smax - Smin + lambda_ * (S - Smin))
-    return dSdt
-
-# Interpoler les données de précipitations et d'évapotranspiration de référence
-P_interp = interp1d(data["Days"], data["Precipitations"], kind="linear", fill_value="extrapolate")
-ET0_interp = interp1d(data["Days"], et0["Et0"], kind="linear", fill_value="extrapolate")
-
-# Résoudre l'équation différentielle
-initial_stock = 150
-sol = solve_ivp(equation_11, (data["Days"].iloc[0], data["Days"].iloc[-1]), [initial_stock], args=(Dmax, Smin, Smax, Kc, lambda_, P_interp, ET0_interp), t_eval=data["Days"])
-
-# Afficher les résultats
-plt.plot(sol.t, sol.y[0])
-plt.title("Stock d'eau dans la forêt en fonction du temps")
-plt.xlabel("Jours")
-plt.ylabel("Stock d'eau")
+# Créer une figure avec 4x4 sous-graphiques pour afficher les séries chronologiques de chaque variable
+fig, axs = plt.subplots(4, 4, figsize=(15, 10))
+for i, ax in enumerate(axs.flatten()):
+    data.plot(x='Days', y=data.columns[i+1], ax=ax, legend=None)
+    ax.set_title('Série chronologique de ' + data.columns[i+1])
+    ax.set_xlabel('Jours')
+    ax.set_ylabel(data.columns[i+1])
+plt.tight_layout()
 plt.show()
+plt.savefig('mathfig1.png',dpi=300)
 
+# Tâche 2 : Calcul et visualisation de ET0
 
-#%%Tache 3
+# ET0 est un indicateur d'évapotranspiration. Il est calculé à partir des données à l'aide de la fonction calculate_et0_matlab().
+et0_matlab = calculate_et0_matlab(data.to_numpy())
 
+# Ajouter ET0 au DataFrame des données ET0 calculé est ajouté à notre tableau de données comme nouvelle colonne.
+data['ET0'] = et0_matlab
 
-import numpy as np
-from scipy.integrate import solve_ivp
-from scipy.interpolate import interp1d
-import matplotlib.pyplot as plt
-
-# Paramètres initiaux
-Dmax = 15
-Smin = 70
-Smax = 150
-Kc = 0.25
-lambda_ = 2
-
-# Fonction pour l'équation 11
-def equation_11(t, S, Dmax, Smin, Smax, Kc, lambda_, P, ET0):
-    dSdt = P(t) - (Dmax * (S - Smin) * Kc * ET0(t)) / (Smax - Smin + lambda_ * (S - Smin))
-    return dSdt
-
-# Interpoler les données de précipitations et d'évapotranspiration de référence
-P_interp = interp1d(data["Days"], data["Precipitations"], kind="linear", fill_value="extrapolate")
-ET0_interp = interp1d(data["Days"], et0["Et0"], kind="linear", fill_value="extrapolate")
-
-# Résoudre l'équation différentielle
-initial_stock = 150
-sol = solve_ivp( equation_11 , (data["Days"].iloc[0], data["Days"].iloc[-1]), [initial_stock] , args=(Dmax, Smin, Smax, Kc, lambda_, P_interp, ET0_interp),t_eval=data["Days"], t_span=(0,1094))
-print(data["Days"].iloc[0], data["Days"].iloc[-1])
-print(t_eval[0], t_eval[-1])
-
-# Afficher les résultats
-plt.plot(sol.t, sol.y[0])
-plt.title("Stock d'eau dans la forêt en fonction du temps")
+# Afficher la série chronologique de ET0
+plt.figure(figsize=(12, 6))
+plt.plot(data['Days'], data['ET0'])
 plt.xlabel("Jours")
-plt.ylabel("Stock d'eau")
+plt.ylabel("ET0 (mm/jour)")
+plt.title("Evapotranspiration ")
 plt.show()
+plt.savefig('mathfig2.png',dpi=300)
+
+
+# Tâche 3 : Modélisation du stock d'eau dans le sol et visualisation des résultats
+
+# Définition de l'équation différentielle pour le modèle du stock d'eau dans le sol 
+#Parametres initiaux 
+Dmax=15
+Smin=70
+Smax=150
+Sinitial=150
+lb=2
+Kc=0.25
+
+# Supprimer les valeurs manquantes dans ET0 et rain_T
+et0_matlab.dropna(inplace=True)
+rain_T=data.iloc[:1064,-2]
+rain_T.dropna(inplace=True)
+
+# Effectuer une interpolation linéaire pour P_interp et Et0_interp
+P_interp = interpolate.interp1d(rain_T.index, rain_T.values, kind="linear")
+Et0_interp = interpolate.interp1d(x=et0_matlab.index, y=et0_matlab['Et0'], kind="linear")
+
+# Définir l'équation différentielle pour le modèle du stock d'eau dans le sol
+def eq11(t, S,Dmax, Smin, Smax, lb, Kc):
+    if (S - Smin) < 0 and lb<1:
+        return 0
+    else:
+        P = P_interp(t)
+        KcEt0 = Kc*(Et0_interp(t))
+        S_new = P - KcEt0 - Dmax*(((S - Smin)/(Smax - Smin))**lb)
+        return S_new
+
+# Définition des temps d'évaluation pour l'intégration
+t_eval = np.linspace(et0_matlab.index[0], et0_matlab.index[-1], 1064)
+t_span=[et0_matlab.index[0], et0_matlab.index[-1]]
+
+# Résolution de l'équation différentielle pour obtenir le stock d'eau dans le sol
+stock_eau = solve_ivp(eq11, t_span, [Sinitial],args=(Dmax, Smin, Smax, lb, Kc), t_eval=t_eval)
+
+# Afficher la série chronologique du stock d'eau dans le sol
+plt.plot(stock_eau.t, stock_eau.y[0])
+plt.xlabel("Jours")
+plt.ylabel("Stock d'eau dans le sol (mm)")
+plt.yticks(range(70, 151, 10))
+plt.title("Modelisation du stock en eau : Methode de Runge Kunta")
+plt.show()
+plt.savefig('mathfig3.png',dpi=300)
+
+# Tâche 4 : Analyse de sensibilité des paramètres du modèle
+
+# Liste des paramètres et leurs valeurs correspondantes pour l'analyse de sensibilité
+params = [('Dmax', np.linspace(1, 50, num=11, dtype=int)),
+          ('Smin', np.linspace(60, 80, num=11, dtype=int)),
+          ('Smax', np.linspace(100, 200, num=11, dtype=int)),
+          ('lb', np.linspace(0.5, 5, num=10, dtype=float)),
+          ('Kc', np.around(np.linspace(0.1, 0.4, num=11), decimals=2))]
+
+# Boucle sur chaque paramètre pour créer une figure
+# Chaque figure affiche le stock d'eau dans le sol en fonction du temps pour différentes valeurs du paramètre
+for param, param_vals in params:
+    fig, ax = plt.subplots(figsize=(6, 6))
+    for param_val in param_vals:
+        args = (Dmax, Smin, Smax, lb, Kc)
+        if param == 'Dmax':
+            args = (param_val, Smin, Smax, lb, Kc)
+        elif param == 'Smin':
+            args = (Dmax, param_val, Smax, lb, Kc)
+        elif param == 'Smax':
+            args = (Dmax, Smin, param_val, lb, Kc)
+        elif param == 'lb':
+            args = (Dmax, Smin, Smax, param_val, Kc)
+        elif param == 'Kc':
+            args = (Dmax, Smin, Smax, lb, param_val)
+        
+        var_stock_eau = solve_ivp(eq11, t_span, [Sinitial], args=args, t_eval=t_eval)
+        ax.plot(var_stock_eau.t, var_stock_eau.y[0], label=f"{param} = {param_val}")
+       
+    # Réglages des axes et des étiquettes
+    ax.set_xlabel("Jours")
+    ax.set_ylabel("Stock d'eau dans le sol (mm)")
+    ax.legend(fontsize=8, loc='upper right', labelspacing=0.05, ncol=3)
+    ax.set_ylim(20, 275)
+    # Affichage de la figure
+    plt.show()
+    plt.savefig('mathfig4.png',dpi=300)
